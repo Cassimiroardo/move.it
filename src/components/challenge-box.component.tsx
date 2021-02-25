@@ -10,7 +10,7 @@ export function ChallengeBoxComponent() {
                     <header>Ganhe 400 xp</header>
                     <main>
                         <img src="icons/body.svg" />
-                        <strong>Desafio</strong>
+                        <strong>Novo desafio!</strong>
                         <p>Levante ai cara</p>
                     </main>
                     <footer>
