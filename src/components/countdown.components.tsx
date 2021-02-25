@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { ChallengeContext } from '../contexts/challenge.context'
+import { useChallengeContext } from '../contexts/challenge.context'
 
 import styles from '../styles/components/countdown.module.css'
 
@@ -12,7 +12,7 @@ export function CountdownComponent() {
     const [isActive, setIsActive] = useState<boolean>(false)
     const [hasFinished, setHasFinished] = useState<boolean>(false)
 
-    const { startNewChallenge } = useContext(ChallengeContext)
+    const { startNewChallenge } = useChallengeContext()
 
     const minutes = Math.floor(timeInSeconds/60)
     const seconds = timeInSeconds%60
