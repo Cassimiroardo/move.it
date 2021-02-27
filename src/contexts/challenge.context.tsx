@@ -1,6 +1,12 @@
-import { createContext, ReactNode, useContext, useEffect, useState } from 'react'
-import { ChallengeInterface } from '../interfaces/challenge.interface'
+import { 
+    createContext, 
+    ReactNode, 
+    useContext, 
+    useEffect, 
+    useState } from 'react'
+import Cookies from 'js-cookie'
 
+import { ChallengeInterface } from '../interfaces/challenge.interface'
 import CHALLENGES from '../../challenges.json'
 
 interface ChallengeContextInterface {
@@ -18,14 +24,20 @@ interface ChallengeContextInterface {
 
 interface ChallengeProviderProps {
     children: ReactNode
+    level: number
+    currentExperience: number
+    totalChallengesCompleted: number
 }
 
 const ChallengeContext = createContext({} as ChallengeContextInterface)
 
-export function ChallengeContextProvider({ children }: ChallengeProviderProps) {
-    const [level, setLevel] = useState<number>(1)
-    const [currentExperience, setCurrentExperience] = useState<number>(0)
-    const [totalChallengesCompleted, setTotalChallengesCompleted] = useState<number>(0)
+export function ChallengeContextProvider({ 
+    children,  
+    ...rest
+}: ChallengeProviderProps) {
+    const [level, setLevel] = useState<number>(rest.level ?? 1)
+    const [currentExperience, setCurrentExperience] = useState<number>(rest.currentExperience ?? 0)
+    const [totalChallengesCompleted, setTotalChallengesCompleted] = useState<number>(rest.totalChallengesCompleted ?? 0)
     const [activeChallenge, setActiveChallenge] = useState<ChallengeInterface>(null)
 
     const experienceToNextLevel = ((level + 1) * 4)**2
@@ -33,6 +45,12 @@ export function ChallengeContextProvider({ children }: ChallengeProviderProps) {
     useEffect(() => {
         Notification.requestPermission()
     }, [])
+
+    useEffect(() => {
+        Cookies.set('level',String(level))
+        Cookies.set('currentExperience',String(currentExperience))
+        Cookies.set('totalChallengesCompleted',String(totalChallengesCompleted))
+    }, [level, currentExperience, totalChallengesCompleted])
 
     const levelUp = () => setLevel(oldLevel => oldLevel + 1)
 
