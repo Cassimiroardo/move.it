@@ -6,6 +6,7 @@ import {
     useState } from 'react'
 import Cookies from 'js-cookie'
 
+import { LevelUpModalComponent } from '../components/level-up-modal.component'
 import { ChallengeInterface } from '../interfaces/challenge.interface'
 import CHALLENGES from '../../challenges.json'
 
@@ -20,6 +21,7 @@ interface ChallengeContextInterface {
     startNewChallenge: () => void
     resetChallenge: () => void
     completeChallenge: () => void
+    closeLevelUpModal: () => void
 }
 
 interface ChallengeProviderProps {
@@ -35,6 +37,7 @@ export function ChallengeContextProvider({
     children,  
     ...rest
 }: ChallengeProviderProps) {
+    const [isLevelUpModalOpen, setIsLevelUpModalOpen] = useState<boolean>(false)
     const [level, setLevel] = useState<number>(rest.level ?? 1)
     const [currentExperience, setCurrentExperience] = useState<number>(rest.currentExperience ?? 0)
     const [totalChallengesCompleted, setTotalChallengesCompleted] = useState<number>(rest.totalChallengesCompleted ?? 0)
@@ -52,7 +55,12 @@ export function ChallengeContextProvider({
         Cookies.set('totalChallengesCompleted',String(totalChallengesCompleted))
     }, [level, currentExperience, totalChallengesCompleted])
 
-    const levelUp = () => setLevel(oldLevel => oldLevel + 1)
+    const levelUp = () => { 
+        setLevel(oldLevel => oldLevel + 1) 
+        setIsLevelUpModalOpen(true)
+    }
+
+    const closeLevelUpModal = () => setIsLevelUpModalOpen(false)
 
     const startNewChallenge = () => {
         const randomChallengeIndex = Math.floor(Math.random() * CHALLENGES.length)
@@ -95,9 +103,11 @@ export function ChallengeContextProvider({
             levelUp,
             startNewChallenge,
             resetChallenge,
-            completeChallenge
+            completeChallenge,
+            closeLevelUpModal,
             }}>
             {children}
+            {isLevelUpModalOpen && <LevelUpModalComponent />}
         </ChallengeContext.Provider>
     )
 }
